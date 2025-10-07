@@ -1,0 +1,103 @@
+<div class="glass-card shadow-lg rounded-2xl p-6 max-w-4xl mx-auto text-white">
+  @switch (viewMode()) {
+    @case ('list') {
+      <div class="flex flex-wrap justify-between items-center mb-6 gap-4">
+        <h2 class="text-2xl font-bold">مجموعات البطاقات التعليمية</h2>
+        <button (click)="showCreateView()" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 btn-3d border-indigo-800">
+          إنشاء مجموعة جديدة
+        </button>
+      </div>
+
+       <div class="flex items-center justify-end mb-4">
+        <label for="shuffle-toggle" class="ml-3 text-sm font-medium text-gray-300">مذاكرة عشوائية (Shuffle)</label>
+        <label class="relative inline-flex items-center cursor-pointer">
+          <input type="checkbox" id="shuffle-toggle" class="sr-only peer" [checked]="isShuffled()" (change)="isShuffled.set($any($event.target).checked)">
+          <div class="w-11 h-6 bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-indigo-800 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+        </label>
+      </div>
+
+      @if (sets().length > 0) {
+        <ul class="space-y-3">
+          @for (set of sets(); track set.id) {
+            <li class="flex justify-between items-center p-4 bg-gray-800/50 rounded-lg">
+              <div>
+                <span class="font-semibold text-lg">{{ set.title }}</span>
+                <span class="text-sm text-gray-400"> ({{ set.cards.length }} بطاقات)</span>
+              </div>
+              <button (click)="startStudy(set)" class="px-4 py-2 text-sm bg-green-600 rounded-lg hover:bg-green-700 btn-3d border-green-800">ابدأ المذاكرة</button>
+            </li>
+          }
+        </ul>
+      } @else {
+        <p class="text-center text-gray-400 py-8">ليس لديك أي مجموعات بطاقات. قم بإنشاء واحدة!</p>
+      }
+    }
+
+    @case ('create') {
+      <div>
+        <div class="flex justify-between items-center mb-6">
+          <h2 class="text-2xl font-bold">إنشاء مجموعة جديدة</h2>
+          <button (click)="backToList()" class="text-sm text-gray-300 hover:text-white">&larr; عودة</button>
+        </div>
+        <div class="space-y-4">
+          <input type="text" [value]="newSetTitle()" (input)="newSetTitle.set($any($event.target).value)" placeholder="عنوان المجموعة" class="w-full p-2 bg-gray-700/50 border border-gray-600 rounded-md">
+          
+          @for (card of newCards(); track $index) {
+            <div class="flex gap-2 p-3 bg-gray-900/50 rounded-lg">
+              <span class="text-gray-400 mt-2">{{ $index + 1 }}.</span>
+              <div class="flex-grow space-y-2">
+                <textarea [value]="card.question" (input)="updateCardField($index, 'question', $event)" placeholder="السؤال" rows="2" class="w-full p-2 bg-gray-700 rounded-md"></textarea>
+                <textarea [value]="card.answer" (input)="updateCardField($index, 'answer', $event)" placeholder="الإجابة" rows="2" class="w-full p-2 bg-gray-700 rounded-md"></textarea>
+              </div>
+              <button (click)="removeCardField($index)" class="text-red-400 hover:text-red-600 self-center">&times;</button>
+            </div>
+          }
+          
+          <div class="flex justify-between">
+            <button (click)="addCardField()" class="text-indigo-400 hover:underline">+ إضافة بطاقة</button>
+            <button (click)="saveSet()" class="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 btn-3d border-green-800">حفظ المجموعة</button>
+          </div>
+        </div>
+      </div>
+    }
+
+    @case ('study') {
+      @if (studyingSet(); as set) {
+        <div>
+          <div class="flex justify-between items-center mb-4">
+            <h2 class="text-2xl font-bold">{{ set.title }}</h2>
+            <button (click)="backToList()" class="text-sm text-gray-300 hover:text-white">&larr; عودة</button>
+          </div>
+          <p class="text-center text-gray-400 mb-4">البطاقة {{ currentCardIndex() + 1 }} من {{ set.cards.length }}</p>
+
+          <!-- Flashcard -->
+          <div class="relative w-full h-80 perspective-1000">
+            <div class="relative w-full h-full transform-style-preserve-3d transition-transform duration-700" [class.rotate-y-180]="isFlipped()">
+              <!-- Front -->
+              <div (click)="flipCard()" class="absolute w-full h-full backface-hidden flex items-center justify-center p-6 bg-indigo-800 rounded-2xl cursor-pointer">
+                <p class="text-2xl text-center">{{ set.cards[currentCardIndex()]?.question }}</p>
+              </div>
+              <!-- Back -->
+              <div (click)="flipCard()" class="absolute w-full h-full backface-hidden flex items-center justify-center p-6 bg-green-800 rounded-2xl cursor-pointer rotate-y-180">
+                <p class="text-2xl text-center">{{ set.cards[currentCardIndex()]?.answer }}</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex justify-between items-center mt-6">
+            <button (click)="prevCard()" class="px-6 py-2 bg-gray-600 rounded-lg hover:bg-gray-700">السابق</button>
+            <button (click)="flipCard()" class="px-6 py-2 bg-yellow-600 text-black rounded-lg hover:bg-yellow-700">اقلب البطاقة</button>
+            <button (click)="nextCard()" class="px-6 py-2 bg-gray-600 rounded-lg hover:bg-gray-700">التالي</button>
+          </div>
+        </div>
+      }
+    }
+  }
+</div>
+
+<style>
+.perspective-1000 { perspective: 1000px; }
+.transform-style-preserve-3d { transform-style: preserve-3d; }
+.backface-hidden { backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+.rotate-y-180 { transform: rotateY(180deg); }
+</style>
