@@ -1,0 +1,62 @@
+<div class="glass-card shadow-2xl rounded-3xl p-8 max-w-2xl mx-auto text-center flex flex-col items-center gap-8 text-white">
+  <h2 class="text-3xl font-bold">مؤقت التركيز (بومودورو)</h2>
+
+  <!-- Mode Selector -->
+  <div class="flex items-center bg-gray-900/50 rounded-full p-1">
+    <button (click)="setMode('work')" class="px-6 py-2 rounded-full transition-colors text-sm font-semibold" [class.bg-blue-600]="mode() === 'work'" [class.text-white]="mode() === 'work'">تركيز</button>
+    <button (click)="setMode('shortBreak')" class="px-6 py-2 rounded-full transition-colors text-sm font-semibold" [class.bg-green-500]="mode() === 'shortBreak'" [class.text-white]="mode() === 'shortBreak'">استراحة قصيرة</button>
+    <button (click)="setMode('longBreak')" class="px-6 py-2 rounded-full transition-colors text-sm font-semibold" [class.bg-teal-500]="mode() === 'longBreak'" [class.text-white]="mode() === 'longBreak'">استراحة طويلة</button>
+  </div>
+
+  <!-- Timer Display -->
+  <div class="relative w-80 h-80">
+    <svg class="w-full h-full" viewBox="0 0 300 300">
+      <circle class="text-gray-600" stroke-width="15" stroke="currentColor" fill="transparent" r="140" cx="150" cy="150" />
+      <circle class="progress-ring__circle"
+              [class.text-blue-500]="mode() === 'work'"
+              [class.text-green-500]="mode() === 'shortBreak'"
+              [class.text-teal-500]="mode() === 'longBreak'"
+              stroke-width="15"
+              stroke-linecap="round"
+              stroke="currentColor"
+              fill="transparent"
+              r="140"
+              cx="150"
+              cy="150"
+              [style.stroke-dasharray]="circumference"
+              [style.stroke-dashoffset]="progressOffset()" />
+    </svg>
+    <div class="absolute inset-0 flex items-center justify-center">
+      <span class="text-6xl font-bold font-mono">{{ formatTime() }}</span>
+    </div>
+  </div>
+
+  <!-- Controls -->
+  <div class="flex items-center gap-4">
+    <button (click)="startTimer()" [disabled]="isActive()" class="px-10 py-3 bg-blue-600 text-white rounded-full font-semibold text-lg hover:bg-blue-700 disabled:opacity-50 transition-all btn-3d border-blue-800">
+      ابدأ
+    </button>
+    <button (click)="pauseTimer()" [disabled]="!isActive()" class="px-10 py-3 bg-yellow-500 text-white rounded-full font-semibold text-lg hover:bg-yellow-600 disabled:opacity-50 transition-all btn-3d border-yellow-700">
+      إيقاف مؤقت
+    </button>
+    <button (click)="resetTimer()" class="px-10 py-3 bg-red-600 text-white rounded-full font-semibold text-lg hover:bg-red-700 transition-all btn-3d border-red-800">
+      إعادة ضبط
+    </button>
+  </div>
+
+  <!-- Settings -->
+  <div class="grid grid-cols-3 gap-4 w-full pt-4 border-t border-gray-700/50">
+    <div class="text-center">
+      <label class="block text-sm font-medium text-gray-300 mb-1">وقت التركيز (دقائق)</label>
+      <input type="number" [value]="timerSettings().work" (change)="updateTimeSetting('work', $event)" class="w-20 p-1 text-center bg-gray-700/50 rounded-md border border-gray-600">
+    </div>
+    <div class="text-center">
+      <label class="block text-sm font-medium text-gray-300 mb-1">استراحة قصيرة</label>
+      <input type="number" [value]="timerSettings().shortBreak" (change)="updateTimeSetting('shortBreak', $event)" class="w-20 p-1 text-center bg-gray-700/50 rounded-md border border-gray-600">
+    </div>
+    <div class="text-center">
+      <label class="block text-sm font-medium text-gray-300 mb-1">استراحة طويلة</label>
+      <input type="number" [value]="timerSettings().longBreak" (change)="updateTimeSetting('longBreak', $event)" class="w-20 p-1 text-center bg-gray-700/50 rounded-md border border-gray-600">
+    </div>
+  </div>
+</div>
