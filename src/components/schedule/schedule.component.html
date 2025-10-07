@@ -1,0 +1,42 @@
+<div class="glass-card shadow-lg rounded-2xl p-6 text-white">
+  <div class="flex flex-wrap justify-between items-center mb-6 gap-4">
+    <h2 class="text-2xl font-bold">جدول المذاكرة الأسبوعي</h2>
+    <div class="flex gap-2">
+       <button (click)="printSchedule()" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors btn-3d border-green-800">
+        طباعة الجدول
+      </button>
+      <button (click)="clearSchedule()" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors btn-3d border-red-800">
+        مسح الجدول
+      </button>
+    </div>
+  </div>
+  
+  <div class="overflow-x-auto">
+    <table class="w-full text-sm text-center text-gray-300 border-collapse">
+      <thead class="text-xs text-gray-300 uppercase bg-white/10">
+        <tr>
+          <th scope="col" class="py-3 px-2 border border-gray-700">الوقت</th>
+          @for (day of days(); track day) {
+            <th scope="col" class="py-3 px-6 border border-gray-700">{{ day }}</th>
+          }
+        </tr>
+      </thead>
+      <tbody>
+        @for (time of times(); track time) {
+          <tr class="hover:bg-white/5">
+            <th scope="row" class="py-4 px-2 font-medium text-white whitespace-nowrap border border-gray-700">
+              {{ time }}
+            </th>
+            @for (day of days(); track day) {
+              <td class="py-2 px-1 border border-gray-700 min-w-[100px] h-16 cursor-text"
+                  contenteditable="true"
+                  (blur)="updateCell(day, time, $event)"
+                  [innerText]="getCellData(day, time)">
+              </td>
+            }
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>
