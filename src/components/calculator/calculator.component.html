@@ -1,0 +1,33 @@
+<div class="max-w-xs mx-auto bg-gray-800 rounded-3xl shadow-2xl p-6 border border-gray-700">
+  <h2 class="text-3xl font-bold text-white mb-4 text-center">آلة حاسبة</h2>
+  <!-- Display -->
+  <div class="bg-gray-900/50 rounded-lg p-4 mb-6 text-right text-5xl font-mono text-white overflow-x-auto h-20 flex items-end justify-end border border-gray-700">
+    {{ display() }}
+  </div>
+
+  <!-- Buttons -->
+  <div class="grid grid-cols-4 gap-4">
+    <button (click)="clear()" class="col-span-2 calculator-btn text-red-400">C</button>
+    <button (click)="backspace()" class="calculator-btn operator-btn">&larr;</button>
+    <button (click)="handleInput('/')" class="calculator-btn operator-btn">/</button>
+
+    <button (click)="handleInput('7')" class="calculator-btn">7</button>
+    <button (click)="handleInput('8')" class="calculator-btn">8</button>
+    <button (click)="handleInput('9')" class="calculator-btn">9</button>
+    <button (click)="handleInput('*')" class="calculator-btn operator-btn">x</button>
+    
+    <button (click)="handleInput('4')" class="calculator-btn">4</button>
+    <button (click)="handleInput('5')" class="calculator-btn">5</button>
+    <button (click)="handleInput('6')" class="calculator-btn">6</button>
+    <button (click)="handleInput('-')" class="calculator-btn operator-btn">-</button>
+    
+    <button (click)="handleInput('1')" class="calculator-btn">1</button>
+    <button (click)="handleInput('2')" class="calculator-btn">2</button>
+    <button (click)="handleInput('3')" class="calculator-btn">3</button>
+    <button (click)="handleInput('+')" class="calculator-btn operator-btn">+</button>
+    
+    <button (click)="handleInput('0')" class="col-span-2 calculator-btn">0</button>
+    <button (click)="handleInput('.')" class="calculator-btn">.</button>
+    <button (click)="calculate()" class="calculator-btn bg-blue-600 text-white operator-btn">=</button>
+  </div>
+</div>
