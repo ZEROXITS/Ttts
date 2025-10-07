@@ -1,0 +1,61 @@
+<div class="glass-card shadow-lg rounded-2xl p-6 max-w-4xl mx-auto text-white">
+  <h2 class="text-2xl font-bold mb-6">مركز الموارد</h2>
+
+  <!-- Add Resource Form -->
+  <div class="bg-gray-900/50 p-4 rounded-lg mb-6">
+    <h3 class="font-semibold mb-3">إضافة مورد جديد</h3>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+      <input type="text"
+             [value]="newResource().title"
+             (input)="updateNewResourceField('title', $event)"
+             placeholder="العنوان"
+             class="p-2 bg-gray-700/50 border border-gray-600 rounded-md">
+      <input type="url"
+             [value]="newResource().url"
+             (input)="updateNewResourceField('url', $event)"
+             placeholder="الرابط (URL)"
+             class="p-2 bg-gray-700/50 border border-gray-600 rounded-md">
+      <input type="text"
+             [value]="newResource().category"
+             (input)="updateNewResourceField('category', $event)"
+             placeholder="المادة (فيزياء، رياضيات...)"
+             class="p-2 bg-gray-700/50 border border-gray-600 rounded-md">
+    </div>
+    <button (click)="addResource()" class="mt-3 w-full p-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700">
+      إضافة المورد
+    </button>
+  </div>
+
+  <!-- Filters -->
+  <div class="flex flex-wrap gap-2 mb-6">
+    @for (cat of categories(); track cat) {
+      <button (click)="filterCategory.set(cat)"
+              class="px-3 py-1 text-sm rounded-full transition-colors"
+              [class.bg-indigo-600]="filterCategory() === cat"
+              [class.text-white]="filterCategory() === cat"
+              [class.bg-gray-700]="filterCategory() !== cat">
+        {{ cat === 'all' ? 'الكل' : cat }}
+      </button>
+    }
+  </div>
+
+  <!-- Resources List -->
+  <div class="space-y-3 max-h-96 overflow-y-auto">
+    @if (filteredResources().length > 0) {
+      @for (resource of filteredResources(); track resource.id) {
+        <div class="flex items-center justify-between p-3 bg-gray-800/50 rounded-lg">
+          <div>
+            <a [href]="resource.url" target="_blank" rel="noopener noreferrer"
+               class="font-semibold text-lg text-blue-300 hover:underline">
+              {{ resource.title }}
+            </a>
+            <p class="text-sm text-gray-400">{{ resource.category }}</p>
+          </div>
+          <button (click)="deleteResource(resource.id)" class="text-red-500 hover:text-red-400 text-2xl font-bold">&times;</button>
+        </div>
+      }
+    } @else {
+      <p class="text-center text-gray-400 py-8">لا توجد موارد. أضف موردك الأول!</p>
+    }
+  </div>
+</div>
