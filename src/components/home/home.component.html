@@ -1,0 +1,103 @@
+<div class="animate-fade-in-up space-y-10">
+  <!-- Header -->
+  <div class="p-8 rounded-3xl glass-card text-center md:text-right">
+    <h1 class="text-4xl md:text-5xl font-black text-white mb-2 text-glow">
+      {{ welcomeMessage() }}!
+    </h1>
+    <p class="text-lg text-gray-300">
+      مرحباً بك في Study Hub. كل أدواتك في انتظارك وجاهزة ليوم دراسي منتج.
+    </p>
+  </div>
+
+  <!-- Dashboard Widgets -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <!-- Goals Widget -->
+    <a [routerLink]="['/goals']" class="dashboard-widget hover:border-cyan-400 border-cyan-500/50 transition-colors duration-300">
+      <h3 class="text-xl font-bold mb-3 text-cyan-300">أهدافك النشطة</h3>
+      @if (incompleteGoals() > 0) {
+        <div class="my-auto text-center">
+          <p class="text-6xl font-bold">{{ incompleteGoals() }}</p>
+          <p class="text-gray-400">أهداف متبقية</p>
+        </div>
+      } @else {
+        <div class="my-auto text-center">
+            <p class="text-2xl font-bold">🎉</p>
+            <p class="text-gray-300">لا توجد أهداف نشطة. عمل رائع!</p>
+        </div>
+      }
+    </a>
+
+    <!-- Quiz Widget -->
+     <a [routerLink]="['/quiz-taker']" class="dashboard-widget hover:border-violet-400 border-violet-500/50 transition-colors duration-300">
+        <h3 class="text-xl font-bold mb-3 text-violet-300">آخر اختبار</h3>
+        @if (latestQuizResult(); as result) {
+            <div class="my-auto text-center">
+                <p class="text-sm text-gray-400 truncate">{{ result.quizTitle }}</p>
+                <p class="text-6xl font-bold" [class.text-green-400]="result.score >= 50" [class.text-red-400]="result.score < 50">
+                    {{ result.score.toFixed(0) }}%
+                </p>
+            </div>
+        } @else {
+            <div class="my-auto text-center">
+                <p class="text-gray-300">لم تقم بأي اختبار بعد.</p>
+            </div>
+        }
+    </a>
+
+     <!-- Focus Timer Quick Access -->
+    <a [routerLink]="['/focus-timer']" class="dashboard-widget hover:border-amber-400 border-amber-500/50 transition-colors duration-300">
+        <h3 class="text-xl font-bold mb-3 text-amber-300">جاهز للتركيز؟</h3>
+        <div class="my-auto text-center">
+          <div class="text-6xl">⏱️</div>
+          <p class="mt-2 text-gray-300">ابدأ جلسة بومودورو</p>
+        </div>
+    </a>
+  </div>
+  
+  <!-- Tools Section -->
+  <div>
+      <h2 class="text-3xl font-bold mb-6 text-center">الأدوات</h2>
+      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+        <!-- Feature Card -->
+        <a [routerLink]="['/schedule']" class="feature-card border-cyan-500/50 hover:border-cyan-400">
+          <div class="card-icon bg-cyan-500/10 text-cyan-400">📅</div>
+          <h3 class="text-xl font-bold mb-1">الجدول</h3>
+        </a>
+        <!-- Feature Card -->
+        <a [routerLink]="['/ai-solver']" class="feature-card border-rose-500/50 hover:border-rose-400">
+           <div class="card-icon bg-rose-500/10 text-rose-400">🧠</div>
+          <h3 class="text-xl font-bold mb-1">مساعد ذكي</h3>
+        </a>
+        <!-- Feature Card -->
+        <a [routerLink]="['/quiz-taker']" class="feature-card border-violet-500/50 hover:border-violet-400">
+           <div class="card-icon bg-violet-500/10 text-violet-400">📝</div>
+          <h3 class="text-xl font-bold mb-1">الاختبارات</h3>
+        </a>
+        <!-- Feature Card -->
+        <a [routerLink]="['/flashcards']" class="feature-card border-teal-500/50 hover:border-teal-400">
+           <div class="card-icon bg-teal-500/10 text-teal-400">🗂️</div>
+          <h3 class="text-xl font-bold mb-1">بطاقات</h3>
+        </a>
+        <!-- Feature Card -->
+        <a [routerLink]="['/resources']" class="feature-card border-orange-500/50 hover:border-orange-400">
+           <div class="card-icon bg-orange-500/10 text-orange-400">🔗</div>
+          <h3 class="text-xl font-bold mb-1">موارد</h3>
+        </a>
+        <!-- Feature Card -->
+        <a [routerLink]="['/notepad']" class="feature-card border-gray-500/50 hover:border-gray-400">
+           <div class="card-icon bg-gray-500/10 text-gray-400">📓</div>
+          <h3 class="text-xl font-bold mb-1">مفكرة</h3>
+        </a>
+        <!-- Feature Card -->
+        <a [routerLink]="['/drawing']" class="feature-card border-lime-500/50 hover:border-lime-400">
+           <div class="card-icon bg-lime-500/10 text-lime-400">🎨</div>
+          <h3 class="text-xl font-bold mb-1">رسم</h3>
+        </a>
+         <!-- Feature Card -->
+        <a [routerLink]="['/calculator']" class="feature-card border-green-500/50 hover:border-green-400">
+           <div class="card-icon bg-green-500/10 text-green-400">🧮</div>
+          <h3 class="text-xl font-bold mb-1">حاسبة</h3>
+        </a>
+      </div>
+  </div>
+</div>
