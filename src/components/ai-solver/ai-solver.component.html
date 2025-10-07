@@ -1,0 +1,104 @@
+<div class="glass-card shadow-lg rounded-2xl p-6 max-w-4xl mx-auto flex flex-col h-[80vh]">
+  <div class="flex-shrink-0">
+      <h2 class="text-3xl font-bold text-white mb-2">المساعد الذكي</h2>
+      <p class="text-gray-300 mb-6">
+        حل المسائل، تحليل الصور، وتلخيص النصوص باستخدام الذكاء الاصطناعي.
+      </p>
+
+      <!-- Tabs -->
+      <div class="flex bg-gray-900/30 rounded-full p-1 mb-6">
+        <button (click)="setMode('text')" class="w-1/3 p-2 rounded-full text-center font-semibold transition-colors"
+                [class.bg-indigo-600]="mode() === 'text'" [class.text-white]="mode() === 'text'">
+          محادثة نصية
+        </button>
+        <button (click)="setMode('image')" class="w-1/3 p-2 rounded-full text-center font-semibold transition-colors"
+                [class.bg-indigo-600]="mode() === 'image'" [class.text-white]="mode() === 'image'">
+          حل بالصورة
+        </button>
+        <button (click)="setMode('summarize')" class="w-1/3 p-2 rounded-full text-center font-semibold transition-colors"
+                [class.bg-indigo-600]="mode() === 'summarize'" [class.text-white]="mode() === 'summarize'">
+          تلخيص نص
+        </button>
+      </div>
+  </div>
+
+
+  <!-- Content & Result Area -->
+  <div class="flex-grow flex flex-col overflow-hidden">
+      <!-- Conversation History -->
+      <div class="flex-grow overflow-y-auto pr-2 space-y-4 mb-4">
+        @if (conversationHistory().length > 0) {
+          @for (message of conversationHistory(); track $index) {
+            <div class="flex" [class.justify-end]="message.role === 'user'">
+              <div class="max-w-xl p-3 rounded-xl" 
+                   [class.bg-indigo-600]="message.role === 'user'"
+                   [class.bg-slate-700]="message.role === 'model'">
+                @if (message.role === 'model') {
+                   <div class="prose prose-sm dark:prose-invert max-w-none whitespace-pre-wrap text-gray-200 leading-relaxed" [innerHTML]="parseMarkdown(message.parts[0].text)"></div>
+                } @else {
+                  <p class="whitespace-pre-wrap">{{ message.parts[0].text }}</p>
+                }
+              </div>
+            </div>
+          }
+        } @else {
+          <div class="text-center text-gray-400 pt-10">
+            <p>ابدأ بطرح سؤال أو اختر وضعًا آخر.</p>
+          </div>
+        }
+
+        @if (isLoading()) {
+          <div class="flex justify-start">
+              <div class="max-w-xl p-3 rounded-xl bg-slate-700">
+                <div class="flex items-center space-x-2 space-x-reverse">
+                    <div class="h-2 w-2 bg-indigo-300 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
+                    <div class="h-2 w-2 bg-indigo-300 rounded-full animate-bounce [animation-delay:-0.15s]"></div>
+                    <div class="h-2 w-2 bg-indigo-300 rounded-full animate-bounce"></div>
+                </div>
+              </div>
+          </div>
+        }
+         @if (error()) {
+            <div class="p-4 bg-red-900/50 border border-red-500/50 text-red-300 rounded-lg">
+              {{ error() }}
+            </div>
+          }
+      </div>
+
+      <!-- Input Area -->
+      <div class="flex-shrink-0 pt-4 border-t border-slate-700/50">
+        @if (mode() === 'text') {
+          <div class="flex items-center gap-2">
+            <textarea #textProblem rows="1" (keydown.enter)="$event.preventDefault(); handleTextInput(textProblem.value, textProblem)" class="w-full p-3 border border-gray-600 rounded-lg bg-gray-700/50 focus:ring-2 focus:ring-indigo-500 focus:outline-none resize-none" placeholder="اطرح سؤالاً..."></textarea>
+            <button (click)="handleTextInput(textProblem.value, textProblem)" [disabled]="isLoading()" class="px-5 py-3 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 disabled:opacity-50 btn-3d border-indigo-800">
+              إرسال
+            </button>
+          </div>
+        }
+
+        @if (mode() === 'image') {
+          <div class="space-y-4">
+            <div class="border-2 border-dashed border-gray-600 rounded-lg p-6 text-center hover:border-indigo-500 transition-colors">
+              @if(imagePreview()) {
+                <img [src]="imagePreview()" alt="معاينة الصورة" class="max-h-40 mx-auto rounded-lg mb-4">
+              }
+              <input type="file" (change)="onFileSelected($event)" accept="image/*" class="block w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-500/10 file:text-indigo-300 hover:file:bg-indigo-500/20 cursor-pointer">
+            </div>
+            <textarea #imageContext rows="2" class="w-full p-3 border border-gray-600 rounded-lg bg-gray-700/50 focus:ring-2 focus:ring-indigo-500 focus:outline-none" placeholder="أضف أي سياق أو سؤال إضافي هنا (اختياري)"></textarea>
+            <button (click)="solveImageProblem(imageContext.value)" [disabled]="isLoading() || !imageFile" class="w-full px-6 py-3 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 disabled:bg-gray-800 disabled:text-gray-400 disabled:cursor-not-allowed transition-colors btn-3d border-indigo-800">
+              {{ isLoading() ? 'جاري الحل...' : 'احصل على الحل من الصورة' }}
+            </button>
+          </div>
+        }
+
+        @if (mode() === 'summarize') {
+           <div class="space-y-4">
+            <textarea #textToSummarize rows="5" class="w-full p-3 border border-gray-600 rounded-lg bg-gray-700/50 focus:ring-2 focus:ring-indigo-500 focus:outline-none" placeholder="ألصق النص الذي تريد تلخيصه هنا..."></textarea>
+            <button (click)="summarizeText(textToSummarize.value, textToSummarize)" [disabled]="isLoading()" class="w-full px-6 py-3 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 disabled:bg-indigo-800 disabled:text-gray-400 disabled:cursor-not-allowed transition-colors btn-3d border-indigo-800">
+              {{ isLoading() ? 'جاري التلخيص...' : 'لخص النص' }}
+            </button>
+          </div>
+        }
+      </div>
+  </div>
+</div>
