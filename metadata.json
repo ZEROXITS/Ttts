@@ -1,0 +1,7 @@
+{
+  "name": "Copy of Study Hub - مركز المذاكرة",
+  "description": "An all-in-one study application featuring a schedule planner, AI solver, drawing pad, notepad, quiz maker, flashcards, goal tracker, and resource hub. All your data is saved locally in your browser for a seamless, private experience.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
