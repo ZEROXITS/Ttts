@@ -1,0 +1,41 @@
+<div class="glass-card shadow-lg rounded-2xl p-6 max-w-2xl mx-auto text-white space-y-8">
+  <div>
+    <h2 class="text-2xl font-bold">إدارة البيانات</h2>
+    <p class="text-gray-400 mt-1">
+        قم بتصدير بياناتك لإنشاء نسخة احتياطية، أو استيرادها لاستعادة تقدمك على متصفح أو جهاز آخر.
+    </p>
+  </div>
+  
+  @if (notification(); as notif) {
+    <div class="p-4 text-sm rounded-lg"
+         [class.bg-green-900]="notif.type === 'success'"
+         [class.text-green-300]="notif.type === 'success'"
+         [class.bg-red-900]="notif.type === 'error'"
+         [class.text-red-300]="notif.type === 'error'">
+      {{ notif.message }}
+    </div>
+  }
+
+  <!-- Export Section -->
+  <div class="p-4 bg-gray-800/50 rounded-lg">
+    <h3 class="font-semibold text-lg mb-2">تصدير البيانات</h3>
+    <p class="text-sm text-gray-400 mb-4">
+        سيؤدي هذا إلى إنشاء ملف JSON يحتوي على جميع الجداول، الملاحظات، الاختبارات، الأهداف، والموارد الخاصة بك.
+    </p>
+    <button (click)="exportData()" class="w-full px-6 py-3 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 btn-3d border-indigo-800">
+      تصدير كل البيانات
+    </button>
+  </div>
+
+  <!-- Import Section -->
+  <div class="p-4 bg-gray-800/50 rounded-lg">
+    <h3 class="font-semibold text-lg mb-2 text-yellow-300">استيراد البيانات</h3>
+    <p class="text-sm text-gray-400 mb-4">
+        <strong class="text-yellow-400">تحذير:</strong> سيؤدي استيراد البيانات إلى الكتابة فوق جميع بياناتك الحالية بشكل دائم.
+    </p>
+    <button (click)="triggerImport()" class="w-full px-6 py-3 bg-yellow-600 text-black font-semibold rounded-lg hover:bg-yellow-700 btn-3d border-yellow-800">
+      استيراد من ملف
+    </button>
+    <input type="file" id="import-input" accept=".json" (change)="onFileSelected($event)" class="hidden">
+  </div>
+</div>
