@@ -1,0 +1,18 @@
+<div class="glass-card shadow-lg rounded-2xl p-6 flex flex-col h-full text-white">
+  <div class="flex flex-wrap justify-between items-center mb-4 gap-2">
+    <h2 class="text-2xl font-bold">المفكرة</h2>
+    <div class="flex items-center gap-4">
+      <span class="text-green-400 transition-opacity duration-300" [class.opacity-0]="!saveStatus()">{{ saveStatus() }}</span>
+      <button (click)="exportNotes()" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors btn-3d border-indigo-800">
+        تصدير
+      </button>
+    </div>
+  </div>
+  
+  <textarea 
+    class="w-full flex-grow p-4 border border-gray-600 rounded-lg bg-gray-700/50 text-gray-200 focus:ring-2 focus:ring-blue-500 focus:outline-none resize-none"
+    placeholder="اكتب ملاحظاتك هنا..."
+    [value]="notes()"
+    (input)="onInput($event)">
+  </textarea>
+</div>
