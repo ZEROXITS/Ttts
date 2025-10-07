@@ -1,0 +1,56 @@
+
+<div class="bg-white dark:bg-gray-800 shadow-lg rounded-2xl p-6 max-w-4xl mx-auto">
+  <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-6">صانع الاختبارات</h2>
+
+  @if (notification(); as notif) {
+    <div class="p-4 mb-4 text-sm rounded-lg"
+         [class.bg-green-100]="notif.type === 'success'"
+         [class.dark:bg-green-900]="notif.type === 'success'"
+         [class.text-green-800]="notif.type === 'success'"
+         [class.dark:text-green-300]="notif.type === 'success'"
+         [class.bg-red-100]="notif.type === 'error'"
+         [class.dark:bg-red-900]="notif.type === 'error'"
+         [class.text-red-800]="notif.type === 'error'"
+         [class.dark:text-red-300]="notif.type === 'error'">
+      {{ notif.message }}
+    </div>
+  }
+
+  <div class="space-y-8">
+    <!-- Quiz Title -->
+    <div>
+      <label for="quizTitle" class="block mb-2 text-lg font-medium text-gray-900 dark:text-white">عنوان الاختبار</label>
+      <input type="text" id="quizTitle" [value]="quizTitle()" (input)="quizTitle.set($any($event.target).value)" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white">
+    </div>
+
+    <!-- Questions -->
+    @for (question of questions(); track question.id; let qIndex = $index) {
+      <div class="p-4 border border-gray-200 dark:border-gray-700 rounded-lg space-y-4 bg-gray-50 dark:bg-gray-900/50">
+        <div class="flex justify-between items-center">
+          <h3 class="text-lg font-semibold">السؤال {{ qIndex + 1 }}</h3>
+          <button (click)="removeQuestion(question.id)" class="text-red-500 hover:text-red-700">&times; حذف السؤال</button>
+        </div>
+        <textarea [value]="question.text" (input)="updateQuestionText($event, question.id)" placeholder="نص السؤال" class="w-full p-2 border rounded-md dark:bg-gray-700 dark:border-gray-600"></textarea>
+        
+        <div class="space-y-2">
+          @for(option of question.options; track option; let oIndex = $index) {
+            <div class="flex items-center gap-2">
+              <input type="radio" [name]="'correct-opt-' + question.id" [checked]="option.isCorrect" (change)="setCorrectOption(question.id, oIndex)" class="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+              <input type="text" [value]="option.text" (input)="updateOptionText($event, question.id, oIndex)" placeholder="نص الخيار {{ oIndex + 1 }}" class="flex-grow p-2 border rounded-md dark:bg-gray-700 dark:border-gray-600">
+              <button (click)="removeOption(question.id, oIndex)" class="text-gray-400 hover:text-red-500 text-xl">&minus;</button>
+            </div>
+          }
+        </div>
+        @if(question.options.length < 5) {
+            <button (click)="addOption(question.id)" class="text-sm text-blue-600 hover:underline">+ إضافة خيار</button>
+        }
+      </div>
+    }
+
+    <!-- Actions -->
+    <div class="flex justify-between items-center pt-4">
+      <button (click)="addQuestion()" class="px-4 py-2 border border-blue-600 text-blue-600 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/50 transition-colors">إضافة سؤال جديد</button>
+      <button (click)="saveQuiz()" class="px-6 py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition-colors">حفظ الاختبار</button>
+    </div>
+  </div>
+</div>
